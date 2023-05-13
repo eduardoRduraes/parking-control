@@ -1,4 +1,4 @@
-package br.com.api.domain.model;
+package br.com.api.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +10,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -29,7 +28,7 @@ public class ParkingSpotModel implements Serializable {
     @Column(nullable = false, name="parking_spot_number", unique = true, length = 10)
     private String parkingSpotNumber;
 
-    @Column(nullable = false, name="license_plate",unique = true, length = 7)
+    @Column(nullable = false, name="license_plate", unique = true, length = 7)
     private String licensePlateCar;
 
     @Column(nullable = false, name="brand_car",length = 70)
@@ -46,6 +45,11 @@ public class ParkingSpotModel implements Serializable {
 
     @Column(nullable = false, name = "responsible_name", length = 130)
     private String responsibleName;
+
+    @Column(nullable = false, length = 30)
+    private String apartment;
+    @Column(nullable = false, length = 30)
+    private String block;
 
     @CreationTimestamp()
     private Timestamp createdAt;

@@ -1,1 +1,16 @@
-
+spring:
+    datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/parking-db
+      username: root
+      password: root
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                jdbc:
+                  lob:
+                    non-contextual-creation: true
+            show-sql: true
