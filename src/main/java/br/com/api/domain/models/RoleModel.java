@@ -13,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "roles")
 public class RoleModel implements GrantedAuthority, Serializable {
 
     @Serial
@@ -23,7 +24,7 @@ public class RoleModel implements GrantedAuthority, Serializable {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true, name="role-name")
+    @Column(nullable = false, unique = true, name="rolename")
     private RoleName roleName;
 
 

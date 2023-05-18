@@ -16,20 +16,24 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     @Bean
-    SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        return http.httpBasic()
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.
+                httpBasic()
                 .and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(
-                        auth -> {
-                            auth.requestMatchers(HttpMethod.GET,"/park-spot/**").permitAll();
-                            auth.requestMatchers(HttpMethod.POST,"/park-spot/**").hasRole("USER");
-                            auth.requestMatchers(HttpMethod.DELETE,"/park-spot/**").hasRole("ADMIN");
+                        authorizeHttpRequests -> {
+                            authorizeHttpRequests.requestMatchers(HttpMethod.GET, "/park-spot/**").permitAll();
+                            authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/park-spot/**").hasRole("USER");
+                            authorizeHttpRequests.requestMatchers(HttpMethod.DELETE, "/park-spot/**").hasRole("ADMIN");
+                            authorizeHttpRequests.anyRequest().authenticated();
                         }
                 )
+                .cors()
+                .and()
                 .build();
     }
 
