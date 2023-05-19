@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name="tb-parking-spot")
+@Table(name="tb_parking_spot")
 @Data
 @NoArgsConstructor
 public class ParkingSpotModel implements Serializable {
