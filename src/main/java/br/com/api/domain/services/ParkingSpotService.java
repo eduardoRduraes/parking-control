@@ -40,7 +40,7 @@ public class ParkingSpotService {
         return null;
     }
 
-    public Page<ParkingSpotModel> getAll(Pageable pageable){
+    public Page<ParkingSpotModel> getAll(Pageable pageable)  {
         return this.repository.findAll(pageable);
     }
 

@@ -1,14 +1,14 @@
 package br.com.api.domain.exceptions;
 
 
-import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.security.sasl.AuthenticationException;
 import java.io.Serial;
 import java.io.Serializable;
 
-
-@AllArgsConstructor
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class InvalidJwtAuthenticationException extends AuthenticationException implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

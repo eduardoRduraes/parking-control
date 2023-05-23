@@ -1,7 +1,7 @@
 package br.com.api.infra.security.jwt;
 
 import br.com.api.domain.data.vo.v1.security.TokenVO;
-import br.com.api.domain.exceptions.InvalidJwtAuthenticationException;
+import br.com.api.domain.exceptions.InvalidJwtTokenException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -22,8 +22,6 @@ import java.util.List;
 
 @Service
 public class JwtTokenProvider {
-
-
     final UserDetailsService userDetailsService;
 
     public JwtTokenProvider(UserDetailsService userDetailsService){
@@ -87,22 +85,23 @@ public class JwtTokenProvider {
         Algorithm alg = Algorithm.HMAC256(secretKey.getBytes());
         JWTVerifier verifier = JWT.require(alg).build();
         return verifier.verify(token);
+
     }
 
-    public String resolveToken(HttpServletRequest req){
-        String bearerToken = req.getHeader("Authorization");
-        if(bearerToken != null && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring("Bearer ".length());
-        }
+    public String resolveToken(HttpServletRequest req) {
+            String bearerToken = req.getHeader("Authorization");
+            if(bearerToken != null && bearerToken.startsWith("Bearer ")){
+                return bearerToken.substring("Bearer ".length());
+            }
         return null;
     }
 
-    public boolean validateToken(String token) throws InvalidJwtAuthenticationException {
+    public boolean validateToken(String token)  {
         DecodedJWT decodedJWT = decodedToken(token);
         try {
             return !decodedJWT.getExpiresAt().before(new Date());
         }catch (Exception e){
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token!");
+            throw new InvalidJwtTokenException(e.getClass().getSimpleName()+" - "+e.getMessage());
         }
     }
 }
