@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +36,7 @@ public class AuthService {
 
             var user = userRepository.findByUsername(username);
 
+
             var tokenResponse = new TokenVO();
 
             if(user != null){
@@ -44,7 +46,7 @@ public class AuthService {
             }
             return ResponseEntity.ok(tokenResponse);
         }catch (Exception e){
-            throw new BadCredentialsException("Invalid username/password supplied!");
+            throw new BadCredentialsException("Invalid username/password supplied! or "+ e.getMessage());
         }
     }
 }

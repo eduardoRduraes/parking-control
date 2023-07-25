@@ -1,7 +1,13 @@
 package br.com.api.adapter.controllers;
 
 import br.com.api.domain.data.vo.v1.security.AccountCredentialsVO;
+import br.com.api.domain.data.vo.v1.security.CreateAccountCredentialsVO;
+import br.com.api.domain.models.UserModel;
 import br.com.api.domain.services.AuthService;
+import br.com.api.domain.services.UserService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     final AuthService authService;
-    public AuthController(AuthService authService){
+    final UserService userService;
+    public AuthController(AuthService authService, UserService userService){
         this.authService = authService;
+        this.userService = userService;
     }
 
 
@@ -32,6 +40,13 @@ public class AuthController {
         }
 
         return token;
+    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody CreateAccountCredentialsVO data){
+        var user = new UserModel();
+        BeanUtils.copyProperties(data, user);
+        this.userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private static boolean checkIfParamsIsNotNull(AccountCredentialsVO data) {
