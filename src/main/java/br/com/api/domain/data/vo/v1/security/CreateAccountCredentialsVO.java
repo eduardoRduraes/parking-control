@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class CreateAccountCredentialsVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -19,5 +18,16 @@ public class CreateAccountCredentialsVO implements Serializable {
     private String fullName;
     private String username;
     private String password;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
+
+    public CreateAccountCredentialsVO(){
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
+    }
 
 }
