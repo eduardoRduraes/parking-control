@@ -1,5 +1,6 @@
 package br.com.api.domain.services;
 
+import br.com.api.domain.exceptions.UserAlreadyExistsException;
 import br.com.api.domain.models.PermissionModel;
 import br.com.api.domain.models.UserModel;
 import br.com.api.domain.repositories.PermissionRepository;
@@ -29,7 +30,7 @@ public class UserService implements UserDetailsService {
     public UserModel createUser(UserModel data){
         var user = this.userRepository.findUserModelByUsername(data.getUsername());
         if(user != null){
-          throw new Error("user already exists!");
+          throw new UserAlreadyExistsException("user already exists!");
         }
         var passwordEncripty  = this.passwordEncoder.encode(data.getPassword());
         data.setPassword(passwordEncripty);

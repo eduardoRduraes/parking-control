@@ -28,6 +28,20 @@ public class AuthService {
     }
 
     @SuppressWarnings("rawtypes")
+    public TokenVO refreshToken(String username, String refreshToken) {
+        var user = userRepository.findByUsername(username);
+
+        var tokenResponse = new TokenVO();
+        if(user != null){
+            tokenResponse = jwtTokenProvider.refreshToken(refreshToken);
+        }else{
+            throw new UsernameNotFoundException("Username " + username + " not found!");
+        }
+
+        return tokenResponse;
+    }
+
+    @SuppressWarnings("rawtypes")
     public ResponseEntity signin(AccountCredentialsVO data){
         try{
             var username = data.getUsername();

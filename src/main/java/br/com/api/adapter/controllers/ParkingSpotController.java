@@ -38,7 +38,7 @@ public class ParkingSpotController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable @Valid UUID id, @RequestBody @Valid ParkingSpotDTO parking){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.update(id, parking));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.update(id, parking));
     }
 
     @GetMapping("/find/{id}")
