@@ -22,7 +22,6 @@ public class DelegatedAuthorizationEntryPoint implements AuthenticationEntryPoin
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-            log.error("Error: "+authException.getClass().getSimpleName()+" "+ authException.getMessage());
             throw new InvalidJwtAuthenticationException(authException.getClass().getSimpleName()+" - "+authException.getMessage());
 
     }

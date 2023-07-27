@@ -24,9 +24,16 @@ public class PermissionModel implements GrantedAuthority, Serializable {
     @Column(nullable = false)
     private String description;
 
+    public PermissionModel(String description){
+        this.description = description;
+    }
+
 
     @Override
     public String getAuthority() {
         return this.description;
     }
+
+
+
 }

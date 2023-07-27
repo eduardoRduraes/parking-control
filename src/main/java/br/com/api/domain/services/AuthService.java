@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +28,20 @@ public class AuthService {
     }
 
     @SuppressWarnings("rawtypes")
+    public TokenVO refreshToken(String username, String refreshToken) {
+        var user = userRepository.findByUsername(username);
+
+        var tokenResponse = new TokenVO();
+        if(user != null){
+            tokenResponse = jwtTokenProvider.refreshToken(refreshToken);
+        }else{
+            throw new UsernameNotFoundException("Username " + username + " not found!");
+        }
+
+        return tokenResponse;
+    }
+
+    @SuppressWarnings("rawtypes")
     public ResponseEntity signin(AccountCredentialsVO data){
         try{
             var username = data.getUsername();
@@ -34,6 +49,7 @@ public class AuthService {
             this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
 
             var user = userRepository.findByUsername(username);
+
 
             var tokenResponse = new TokenVO();
 
@@ -44,7 +60,7 @@ public class AuthService {
             }
             return ResponseEntity.ok(tokenResponse);
         }catch (Exception e){
-            throw new BadCredentialsException("Invalid username/password supplied!");
+            throw new BadCredentialsException("Invalid username/password supplied! or "+ e.getMessage());
         }
     }
 }

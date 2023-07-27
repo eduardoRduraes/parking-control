@@ -33,24 +33,24 @@ public class UserModel implements UserDetails, Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "account_non_expired")
+    @Column(name = "account_non_expired", nullable = false, columnDefinition = "boolean default true")
     private boolean accountNonExpired;
-    @Column(name = "account_non_locked")
+    @Column(name = "account_non_locked",nullable = false, columnDefinition = "boolean default true")
     private boolean accountNonLocked;
-    @Column(name = "credentials_non_expired")
+    @Column(name = "credentials_non_expired",nullable = false, columnDefinition = "boolean default true")
     private boolean credentialsNonExpired;
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="users_permissions", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name="role_id")})
     private List<PermissionModel> permissions;
 
-    public List<String> Roles (){
+    public List<String> Roles(){
         List<String> roles = new ArrayList<>();
         for(PermissionModel p: this.permissions){
             roles.add(p.getDescription());
         }
-
         return roles;
     }
     @Override

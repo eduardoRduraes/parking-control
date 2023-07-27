@@ -1,6 +1,7 @@
 package br.com.api.infra.security;
 
 import br.com.api.domain.exceptions.DelegatedAuthorizationEntryPoint;
+import br.com.api.domain.exceptions.ExceptionAccessDeniedError;
 import br.com.api.domain.exceptions.FilterChainExceptionHandler;
 import br.com.api.infra.security.jwt.JwtConfigurer;
 import br.com.api.infra.security.jwt.JwtTokenProvider;
@@ -13,14 +14,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Configuration
@@ -28,25 +24,17 @@ import java.util.Map;
 public class WebSecurityConfig {
 
     final JwtTokenProvider jwtTokenProvider;
+
     final DelegatedAuthorizationEntryPoint delegatedAuthorizationEntryPoint;
     final FilterChainExceptionHandler filterChainExceptionHandler;
+    final AccessDeniedHandler acessDeniedError;
 
 
-    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, DelegatedAuthorizationEntryPoint delegatedAuthorizationEntryPoint, FilterChainExceptionHandler filterChainExceptionHandler) {
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, DelegatedAuthorizationEntryPoint delegatedAuthorizationEntryPoint, FilterChainExceptionHandler filterChainExceptionHandler,AccessDeniedHandler acessDeniedError) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.delegatedAuthorizationEntryPoint = delegatedAuthorizationEntryPoint;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
-
-        Pbkdf2PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000, Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
-        encoders.put("pbkdf2", pbkdf2Encoder);
-        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
-        passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
-        return passwordEncoder;
+        this.acessDeniedError = acessDeniedError;
     }
 
     @Bean
@@ -67,6 +55,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         auth -> {
                             auth.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                            auth.requestMatchers(HttpMethod.PUT, "/auth/**").permitAll();
                             auth.requestMatchers(HttpMethod.DELETE, "/park-spot/**").hasRole("USER");
                             auth.requestMatchers(HttpMethod.POST, "/park-spot/**").authenticated();
                             auth.requestMatchers(HttpMethod.PUT, "/park-spot/**").hasRole("ADMIN");
@@ -77,6 +66,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilterBefore(filterChainExceptionHandler, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
+                .accessDeniedHandler(acessDeniedError)
                 .authenticationEntryPoint(delegatedAuthorizationEntryPoint)
                 .and()
                 .apply(jwtConfigurer)
